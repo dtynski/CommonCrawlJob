@@ -17,7 +17,7 @@ __all__ = [
 
 class S3Remote(object):
 
-    def __init__(self, bucket='aws-publicdatasets'):
+    def __init__(self, bucket='commoncrawl'):
         self.s3 = boto.connect_s3(anon=True, is_secure=False)
         self.bucket = self.s3.get_bucket(bucket)
 
