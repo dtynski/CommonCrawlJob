@@ -67,7 +67,7 @@ class CommonCrawl(MRJob):
         if 'latin-1' or 'iso-8859-1' in content_type:
             tail = tail.decode('latin-1').encode('utf-8')
    
-        return unicode(tail, errors='replace')
+        return 'test'
 
     def read_warc(self, key):
         keypath = 's3://commoncrawl/{key}'.format(key=key)
