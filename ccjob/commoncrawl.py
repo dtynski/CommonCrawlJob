@@ -84,6 +84,7 @@ class CommonCrawl(MRJob):
     def mapper(self, key, line):
         for record in self.read_warc(line.strip()):
             payload = self.get_payload(record)
+            print(payload)
             for value in self.process_record(payload):
                 yield ((url2pathname(record.url), value), 1)
 
