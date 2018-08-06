@@ -63,7 +63,6 @@ class CommonCrawl(MRJob):
         payload = record.payload.read()
         head, _, tail = payload.partition('\r\n\r\n')
         content_type = self.split_headers(head).get('content-type', '').lower()
-        print(len(tail))
         if 'latin-1' or 'iso-8859-1' in content_type:
             tail = tail.decode('latin-1').encode('utf-8')
         try:
@@ -84,7 +83,7 @@ class CommonCrawl(MRJob):
     def mapper(self, key, line):
         for record in self.read_warc(line.strip()):
             payload = self.get_payload(record)
-            print(payload)
+            print(len(payload))
             for value in self.process_record(payload):
                 yield ((url2pathname(record.url), value), 1)
 
