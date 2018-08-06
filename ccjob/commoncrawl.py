@@ -63,14 +63,13 @@ class CommonCrawl(MRJob):
         payload = record.payload.read()
         head, _, tail = payload.partition('\r\n\r\n')
         content_type = self.split_headers(head).get('content-type', '').lower()
-        print(tail)
+        print(len(tail))
         if 'latin-1' or 'iso-8859-1' in content_type:
             tail = tail.decode('latin-1').encode('utf-8')
         try:
-         json.dump(tail)
+           unicode(tail, errors='replace')
         except:
-         tail = 'bad unicode'
-         pass
+            pass
         return tail
 
     def read_warc(self, key):
