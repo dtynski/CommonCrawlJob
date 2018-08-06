@@ -59,17 +59,16 @@ class CommonCrawl(MRJob):
             ] for i in head.splitlines() if ':' in i
         )
 
-    def get_payload(self, record):
+     def get_payload(self, record):
         payload = record.payload.read()
         head, _, tail = payload.partition('\r\n\r\n')
         content_type = self.split_headers(head).get('content-type', '').lower()
         if 'latin-1' or 'iso-8859-1' in content_type:
             tail = tail.decode('latin-1').encode('utf-8')
         try:
-           tail = tail.decode('utf-8','replace').encode("utf-8")
-        except:
-            tail = 'UA-1241231-12'
-        return tail
+            return tail.decode('utf-8')
+        except UnicodeDecodeError:
+            return unicode()
 
     def read_warc(self, key):
         keypath = 's3://commoncrawl/{key}'.format(key=key)
@@ -80,12 +79,18 @@ class CommonCrawl(MRJob):
                     self.increment_counter(self.__class__.__name__, 'match', 1)
                     yield record
 
+
     def mapper(self, key, line):
         for record in self.read_warc(line.strip()):
             payload = self.get_payload(record)
-            print(len(payload))
             for value in self.process_record(payload):
-                yield ((url2pathname(record.url), value), 1)
+                myrecord = record.url
+                try:
+                    myrecord.decode('latin-1').encode('utf-8')
+                except:
+                    myrecord = 'http://google.com'
+                    pass
+                yield ((myrecord, value), 1)
 
     def process_record(self, body):
         for match in self.pattern.finditer(body):
