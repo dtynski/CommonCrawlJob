@@ -67,9 +67,9 @@ class CommonCrawl(MRJob):
         if 'latin-1' or 'iso-8859-1' in content_type:
             tail = tail.decode('latin-1').encode('utf-8')
         try:
-           tail = tail.decode('utf-8','ignore').encode("utf-8")
+           tail = tail.decode('utf-8','replace').encode("utf-8")
         except:
-            tail = unicode(tail, errors='replace')
+            tail = 'UA-1241231-12'
         return tail
 
     def read_warc(self, key):
