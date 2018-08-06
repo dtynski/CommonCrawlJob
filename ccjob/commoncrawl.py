@@ -59,7 +59,7 @@ class CommonCrawl(MRJob):
             ] for i in head.splitlines() if ':' in i
         )
 
-     def get_payload(self, record):
+    def get_payload(self, record):
         payload = record.payload.read()
         head, _, tail = payload.partition('\r\n\r\n')
         content_type = self.split_headers(head).get('content-type', '').lower()
