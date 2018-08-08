@@ -1,4 +1,5 @@
 from __future__ import print_function
+from mr3px.csvprotocol import CsvProtocol
 
 import re
 
