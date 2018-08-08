@@ -13,6 +13,8 @@ __all__ = [
     'CommonCrawl'
 ]
 
+
+    
 class CommonCrawl(MRJob):
     """
     Concrete Base class for CommonCrawl MRJob Task.
@@ -33,7 +35,8 @@ class CommonCrawl(MRJob):
             GoogleAnalytics.run()
     """
     s3 = S3FileSystem(anon=True)
-
+    OUTPUT_PROTOCOL = CsvProtocol
+    
     def __repr__(self):
         return '<{clsname}: {stdin}>'.format(
             clsname=self.__class__.__name__,
