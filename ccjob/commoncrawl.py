@@ -87,7 +87,7 @@ class CommonCrawl(MRJob):
     def mapper(self, key, line):
         for record in self.read_warc(line.strip()):
             payload = self.get_payload(record)
-            for value in self.process_record(payload):
+            for value in self.process_record(payload,record.url):
                 myrecord = record.url
                 try:
                     myrecord.decode('latin-1').encode('utf-8')
@@ -102,5 +102,5 @@ class CommonCrawl(MRJob):
                 yield match.groups()[0]
 
     def reducer(self, url, values):
-        yield (None, url[1].insert(0,url[0]))
+        yield (None, url[1])
 
