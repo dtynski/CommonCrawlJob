@@ -101,5 +101,5 @@ class CommonCrawl(MRJob):
                 yield match.groups()[0]
 
     def reducer(self, url, values):
-        yield (url[0], url[1])
+        yield (None, url[1])
 
