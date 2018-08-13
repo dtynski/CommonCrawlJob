@@ -2,7 +2,7 @@ from __future__ import print_function
 from mr3px.csvprotocol import CsvProtocol
 
 import re
-
+import json
 from mrjob.job import MRJob
 from warc import WARCFile
 from six.moves.urllib.request import url2pathname
@@ -64,24 +64,17 @@ class CommonCrawl(MRJob):
         )
 
     def get_payload(self, record):
-    
-        record = json.loads(record.payload.read())
+        payload = record.payload.read()
+        return payload
 
-        try:
-                    yield record['Envelope']\
-                                ['Payload-Metadata']\
-                                ['HTTP-Response-Metadata']\
-                                ['Headers']\
-                                ['Server'].strip().lower()
-        except KeyError:
-                    yield None
+   
 
     def read_warc(self, key):
         keypath = 's3://commoncrawl/{key}'.format(key=key)
         with self.s3.open(keypath, 'rb') as fp:
             warcfile = WARCFile(fileobj=fp, compress='gzip')
             for record in warcfile.reader:
-                if record.type == 'response':
+                #if record.type == 'response':
                     self.increment_counter(self.__class__.__name__, 'match', 1)
                     yield record
 
