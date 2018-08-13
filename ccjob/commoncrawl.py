@@ -84,11 +84,7 @@ class CommonCrawl(MRJob):
             payload = self.get_payload(record)
             for value in self.process_record(payload,record.url):
                 myrecord = record.url
-                try:
-                    myrecord.decode('latin-1').encode('utf-8')
-                except:
-                    myrecord = 'http://google.com'
-                    pass
+                
                 yield ((myrecord, value), 1)
 
     def process_record(self, body):
