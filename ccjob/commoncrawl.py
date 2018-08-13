@@ -67,13 +67,13 @@ class CommonCrawl(MRJob):
     
         record = json.loads(record.payload.read())
 
-                try:
+        try:
                     yield record['Envelope']\
                                 ['Payload-Metadata']\
                                 ['HTTP-Response-Metadata']\
                                 ['Headers']\
                                 ['Server'].strip().lower()
-                except KeyError:
+        except KeyError:
                     yield None
 
     def read_warc(self, key):
