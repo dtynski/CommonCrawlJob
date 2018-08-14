@@ -62,11 +62,19 @@ class CommonCrawl(MRJob):
                 k.strip() for k in i.split(':', 1)
             ] for i in head.splitlines() if ':' in i
         )
-
+    
     def get_payload(self, record):
         payload = record.payload.read()
-        return payload
+        head, _, tail = payload.partition('\r\n\r\n')
+        content_type = self.split_headers(head).get('content-type', '').lower()
+        if 'latin-1' or 'iso-8859-1' in content_type:
+            tail = tail.decode('latin-1').encode('utf-8')
+        try:
+            return tail.decode('utf-8')
+        except UnicodeDecodeError:
+            return unicode()
 
+   
    
 
     def read_warc(self, key):
