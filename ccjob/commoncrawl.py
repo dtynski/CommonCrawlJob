@@ -65,14 +65,15 @@ class CommonCrawl(MRJob):
     
     def get_payload(self, record):
         payload = record.payload.read()
-        head, _, tail = payload.partition('\r\n\r\n')
-        content_type = self.split_headers(head).get('content-type', '').lower()
-        if 'latin-1' or 'iso-8859-1' in content_type:
-            tail = tail.decode('latin-1').encode('utf-8')
-        try:
-            return tail.decode('utf-8')
-        except UnicodeDecodeError:
-            return unicode()
+        return payload    
+           # head, _, tail = payload.partition('\r\n\r\n')
+       # content_type = self.split_headers(head).get('content-type', '').lower()
+       # if 'latin-1' or 'iso-8859-1' in content_type:
+       #     tail = tail.decode('latin-1').encode('utf-8')
+       # try:
+       #     return tail.decode('utf-8')
+       # except UnicodeDecodeError:
+        #    return unicode()
 
    
    
@@ -82,7 +83,7 @@ class CommonCrawl(MRJob):
         with self.s3.open(keypath, 'rb') as fp:
             g = gzip.GzipFile(fileobj=fp)
             warcfile = WARCFile(fileobj=g)
-            for record in warcfile.reader:
+            for record in warcfile:
                 #if record.type == 'response':
                     self.increment_counter(self.__class__.__name__, 'match', 1)
                     yield record
