@@ -1,6 +1,6 @@
 from __future__ import print_function
 from mr3px.csvprotocol import CsvProtocol
-
+import gzip
 import re
 import json
 from mrjob.job import MRJob
@@ -80,7 +80,8 @@ class CommonCrawl(MRJob):
     def read_warc(self, key):
         keypath = 's3://commoncrawl/{key}'.format(key=key)
         with self.s3.open(keypath, 'rb') as fp:
-            warcfile = WARCFile(fileobj=fp, compress='gzip')
+            g = gzip.GzipFile(fileobj=fp)
+            warcfile = WARCFile(fileobj=g)
             for record in warcfile.reader:
                 #if record.type == 'response':
                     self.increment_counter(self.__class__.__name__, 'match', 1)
@@ -102,4 +103,3 @@ class CommonCrawl(MRJob):
 
     def reducer(self, url, values):
         yield (None, url[1])
-
